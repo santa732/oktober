@@ -1,69 +1,40 @@
-import os
 import requests
 from bs4 import BeautifulSoup
 
-
-FONNTE_TOKEN = "b5RcckpjVtt1Xs2EU2so"
-TARGET_WA_NUMBER = "0889518292763"  
-
-headers = {
-    'Authorization': 'Tb5RcckpjVtt1Xs2EU2so'
-}
-
-def scrape_latest_news():
-    url = "https://news.ycombinator.com/"
+def main():
+    # 1. Scrape Berita
+    url = "https://www.detik.com/terpopuler/inet"
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
     }
+    
+    response = requests.get(url, headers=headers)
+    soup = BeautifulSoup(response.text, "html.parser")
+    articles = soup.find_all("article", limit=5)
 
-    try:
-        response = requests.get(url, headers=headers)
-        soup = BeautifulSoup(response.text, "html.parser")
+    berita_list = ["*--- TOP 5 BERITA TEKNOLOGI HARI INI ---*\n"]
+    for idx, article in enumerate(articles, 1):
+        title_tag = article.find("h3") or article.find("a")
+        link_tag = article.find("a")
+        if title_tag and link_tag:
+            title = title_tag.get_text(strip=True)
+            link = link_tag.get("href")
+            berita_list.append(f"{idx}. *{title}*\n{link}\n")
 
-        # Mengambil 5 headline berita teratas
-        titles = soup.select(".titleline > a")[:5]
+    pesan = "\n".join(berita_list)
 
-        message = "📰 *TOP 5 TECH NEWS HARI INI*\n"
-        message += "━━━━━━━━━━━━━━━━━━━━━━━\n\n"
-
-        for index, item in enumerate(titles, 1):
-            news_title = item.text
-            news_link = item['href']
-            message += f"{index}. *{news_title}*\n🔗 {news_link}\n\n"
-
-        message += "🤖 _Laporan Otomatis via GitHub Actions & Fonnte_"
-        return message
-
-    except Exception as e:
-        print(f"Error saat scraping: {e}")
-        return None
-
-
-def send_whatsapp_message(content):
-    if not content:
-        return
-
-    url = "https://api.fonnte.com/send"
-    payload = {
-        'target': TARGET_WA_NUMBER,
-        'message': content,
-        'countryCode': '62', 
+    # 2. Kirim via Fonnte API
+    fonnte_url = "https://api.fonnte.com/send"
+    fonnte_payload = {
+        "target": "089518392763",
+        "message": pesan,
     }
-    headers = {
-        'Authorization': FONNTE_TOKEN
+    fonnte_headers = {
+        "Authorization": "b5Rcckpjvtt1Xs2EU2soari"
     }
 
-    try:
-        response = requests.post(url, headers=headers, data=payload)
-        print("Response:", response.text)
-        if response.status_code == 200:
-            print("✅ Berita berhasil dikirim ke WhatsApp!")
-        else:
-            print(f"❌ Gagal mengirim: {response.text}")
-    except Exception as e:
-        print(f"❌ Terjadi error: {e}")
-
+    res = requests.post(fonnte_url, data=fonnte_payload, headers=fonnte_headers)
+    print("Respon Fonnte:", res.text)
 
 if __name__ == "__main__":
-    news = scrape_latest_news()
-    send_whatsapp_message(news)
+    main()
