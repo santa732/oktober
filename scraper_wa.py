@@ -6,6 +6,10 @@ from bs4 import BeautifulSoup
 FONNTE_TOKEN = "b5RcckpjVtt1Xs2EU2so"
 TARGET_WA_NUMBER = "0889518292763"  
 
+headers = {
+    'Authorization': 'Tb5RcckpjVtt1Xs2EU2so'
+}
+
 def scrape_latest_news():
     url = "https://news.ycombinator.com/"
     headers = {
