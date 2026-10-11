@@ -30,7 +30,7 @@ def main():
         "message": pesan,
     }
     fonnte_headers = {
-        "Authorization": "b5Rcckpjvtt1Xs2EU2soari"
+        "Authorization": "ufzJopJEsfVjCUgjhUTf
     }
 
     res = requests.post(fonnte_url, data=fonnte_payload, headers=fonnte_headers)
