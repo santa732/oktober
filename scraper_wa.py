@@ -27,7 +27,7 @@ def main():
         # 2. Kirim via Fonnte API
         fonnte_url = "https://api.fonnte.com/send"
         fonnte_payload = {
-            "target": "08951829763",
+            "target": "082278132491
             "message": pesan,
         }
         fonnte_headers = {
