@@ -13,32 +13,32 @@ def main():
         soup = BeautifulSoup(response.text, "html.parser")
         articles = soup.find_all("article", limit=5)
 
-        berita_list = ["*--- TOP 5 BERITA TEKNOLOGI HARI INI ---*\n"]
+        berita_list = ["*TOP 5 BERITA DETIKINET*\n"]
         for idx, article in enumerate(articles, 1):
             title_tag = article.find("h3") or article.find("a")
             link_tag = article.find("a")
             if title_tag and link_tag:
                 title = title_tag.get_text(strip=True)
                 link = link_tag.get("href")
-                berita_list.append(f"{idx}. *{title}*\n{link}\n")
+                berita_list.append(f"{idx}. {title}\n🔗 {link}")
 
-        pesan = "\n".join(berita_list)
+        pesan = "\n\n".join(berita_list)
 
         # 2. Kirim via Fonnte API
         fonnte_url = "https://api.fonnte.com/send"
         fonnte_payload = {
-            "target": "082278132491
-            "message": pesan,
+            "target": "082278132491",
+            "message": pesan
         }
         fonnte_headers = {
-            "Authorization": "ufzJopJEsfVjCUgjhUTf"
+            "Authorization": "ufzJopJEsfVjcUgjhUTfe"
         }
 
         res = requests.post(fonnte_url, data=fonnte_payload, headers=fonnte_headers, timeout=10)
         print("Respon Fonnte:", res.text)
 
     except Exception as e:
-        print("Terjadi error/timeout:", e)
+        print("Terjadi error:", e)
 
 if __name__ == "__main__":
     main()
